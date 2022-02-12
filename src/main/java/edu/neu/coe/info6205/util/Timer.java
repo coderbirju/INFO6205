@@ -39,7 +39,14 @@ public class Timer {
      * @return the average milliseconds per repetition.
      */
     public <T, U> double repeat(int n, Supplier<T> supplier, Function<T, U> function) {
-        return repeat(n, supplier, function, null, null);
+        for (int i = 0; i < n; i++) {
+            T t = supplier.get();
+            function.apply(t);
+            lap();
+        }
+        pause();
+        return meanLapTime();
+//        return repeat(n, supplier, function, null, null);
     }
 
     /**
@@ -53,11 +60,29 @@ public class Timer {
      * @return the average milliseconds per repetition.
      */
     public <T, U> double repeat(int n, Supplier<T> supplier, Function<T, U> function, UnaryOperator<T> preFunction, Consumer<U> postFunction) {
-        logger.trace("repeat: with " + n + " runs");
-        // FIXME: note that the timer is running when this method is called and should still be running when it returns. by replacing the following code
-         return 0;
-        // END 
+        T newSupplier = supplier.get();
+        pause();
+        //repeat it n times
+        for(int i=0; i<n;i++){
+            //handle pre function null
+            if(preFunction!=null ){
+                newSupplier = preFunction.apply(newSupplier);
+            }
+            resume();
+            U theFunction = function.apply(newSupplier);
+            //make a lap
+            pauseAndLap();
+            // Post function null check
+            if(postFunction!=null) {
+                postFunction.accept(theFunction);
+            }
+        }
+//        return stop();
+        double meanTime = meanLapTime();
+        resume();
+        return meanTime;
     }
+
 
     /**
      * Stop this Timer and return the mean lap time in milliseconds.
@@ -175,8 +200,10 @@ public class Timer {
      */
     private static long getClock() {
         // FIXME by replacing the following code
-         return 0;
-        // END 
+        long clock = System.nanoTime();
+        // Duration tickDuration = Duration.ofNanos(250000);
+        return clock;
+        // END
     }
 
     /**
@@ -187,9 +214,7 @@ public class Timer {
      * @return the corresponding number of milliseconds.
      */
     private static double toMillisecs(long ticks) {
-        // FIXME by replacing the following code
-         return 0;
-        // END 
+        return Math.max(0L, Math.round(ticks / 1_000_000.0d));
     }
 
     final static LazyLogger logger = new LazyLogger(Timer.class);
