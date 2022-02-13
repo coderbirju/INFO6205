@@ -54,7 +54,15 @@ public class InsertionSortTest {
         Integer[] xs = list.toArray(new Integer[0]);
         BaseHelper<Integer> helper = new BaseHelper<>("InsertionSort", xs.length, Config.load(InsertionSortTest.class));
         GenericSort<Integer> sorter = new InsertionSort<Integer>(helper);
+//        System.out.println("XS before sort \n");
+//        for(int i = 0; i < xs.length ; i++) {
+//            System.out.print(xs[i]+",");
+//        }
         Integer[] ys = sorter.sort(xs);
+//        System.out.println("Xs after sort \n");
+//        for(int i = 0; i < ys.length ; i++) {
+//            System.out.print(ys[i]+",");
+//        }
         assertTrue(helper.sorted(ys));
         System.out.println(sorter.toString());
     }
@@ -130,6 +138,115 @@ public class InsertionSortTest {
         // Since we set a specific seed, this should always succeed.
         // If we use true random seed and this test fails, just increase the delta a little.
         assertEquals(4950, compares);
+        final int inversions = (int) statPack.getStatistics(InstrumentedHelper.INVERSIONS).mean();
+        final int fixes = (int) statPack.getStatistics(InstrumentedHelper.FIXES).mean();
+        System.out.println(statPack);
+        assertEquals(inversions, fixes);
+    }
+
+    @Test
+    public void sort4() throws Exception {
+        int n = 10;
+        final Config config = ConfigTest.setupConfig("true", "0", "1", "", "");
+        Helper<Integer> helper = HelperFactory.create("InsertionSort", n, config);
+        helper.init(n);
+        final PrivateMethodTester privateMethodTester = new PrivateMethodTester(helper);
+        final StatPack statPack = (StatPack) privateMethodTester.invokePrivate("getStatPack");
+        final List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(6);
+        list.add(5);
+        list.add(7);
+        list.add(8);
+        list.add(9);
+        list.add(10);
+        Integer[] xs = list.toArray(new Integer[0]);
+//        Integer[] xs = new Integer[n];
+        SortWithHelper<Integer> sorter = new InsertionSort<Integer>(helper);
+        sorter.preProcess(xs);
+        Integer[] ys = sorter.sort(xs);
+        assertTrue(helper.sorted(ys));
+        sorter.postProcess(ys);
+        final int compares = (int) statPack.getStatistics(InstrumentedHelper.COMPARES).mean();
+        // NOTE: these are suppoed to match within about 12%.
+        // Since we set a specific seed, this should always succeed.
+        // If we use true random seed and this test fails, just increase the delta a little.
+//        assertEquals(4950, compares);
+        final int inversions = (int) statPack.getStatistics(InstrumentedHelper.INVERSIONS).mean();
+        final int fixes = (int) statPack.getStatistics(InstrumentedHelper.FIXES).mean();
+        System.out.println(statPack);
+        assertEquals(inversions, fixes);
+    }
+
+    @Test
+    public void sort5() throws Exception {
+        int n = 10;
+        final Config config = ConfigTest.setupConfig("true", "0", "1", "", "");
+        Helper<Integer> helper = HelperFactory.create("InsertionSort", n, config);
+        helper.init(n);
+        final PrivateMethodTester privateMethodTester = new PrivateMethodTester(helper);
+        final StatPack statPack = (StatPack) privateMethodTester.invokePrivate("getStatPack");
+        final List<Integer> list = new ArrayList<>();
+        list.add(6);
+        list.add(8);
+        list.add(3);
+        list.add(5);
+        list.add(6);
+        list.add(7);
+        list.add(9);
+        list.add(1);
+        list.add(0);
+        list.add(11);
+        Integer[] xs = list.toArray(new Integer[0]);
+        SortWithHelper<Integer> sorter = new InsertionSort<Integer>(helper);
+        sorter.preProcess(xs);
+        Integer[] ys = sorter.sort(xs);
+        assertTrue(helper.sorted(ys));
+        sorter.postProcess(ys);
+        final int compares = (int) statPack.getStatistics(InstrumentedHelper.COMPARES).mean();
+        // NOTE: these are suppoed to match within about 12%.
+        // Since we set a specific seed, this should always succeed.
+        // If we use true random seed and this test fails, just increase the delta a little.
+        assertEquals(27, compares);
+        final int inversions = (int) statPack.getStatistics(InstrumentedHelper.INVERSIONS).mean();
+        final int fixes = (int) statPack.getStatistics(InstrumentedHelper.FIXES).mean();
+        System.out.println(statPack);
+        assertEquals(inversions, fixes);
+    }
+
+    @Test
+    public void sort6() throws Exception {
+        int n = 10;
+        final Config config = ConfigTest.setupConfig("true", "0", "1", "", "");
+        Helper<Integer> helper = HelperFactory.create("InsertionSort", n, config);
+        helper.init(n);
+        final PrivateMethodTester privateMethodTester = new PrivateMethodTester(helper);
+        final StatPack statPack = (StatPack) privateMethodTester.invokePrivate("getStatPack");
+        final List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(0);
+        list.add(3);
+        list.add(5);
+        list.add(4);
+        list.add(6);
+        list.add(7);
+        list.add(8);
+        list.add(9);
+        list.add(10);
+        Integer[] xs = list.toArray(new Integer[0]);
+        SortWithHelper<Integer> sorter = new InsertionSort<Integer>(helper);
+        sorter.preProcess(xs);
+        Integer[] ys = sorter.sort(xs);
+        assertTrue(helper.sorted(ys));
+        sorter.postProcess(ys);
+        final int compares = (int) statPack.getStatistics(InstrumentedHelper.COMPARES).mean();
+        // NOTE: these are suppoed to match within about 12%.
+        // Since we set a specific seed, this should always succeed.
+        // If we use true random seed and this test fails, just increase the delta a little.
+//        assertEquals(27, compares);
         final int inversions = (int) statPack.getStatistics(InstrumentedHelper.INVERSIONS).mean();
         final int fixes = (int) statPack.getStatistics(InstrumentedHelper.FIXES).mean();
         System.out.println(statPack);
