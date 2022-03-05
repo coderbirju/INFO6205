@@ -8,6 +8,7 @@
 package edu.neu.coe.info6205.union_find;
 
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Height-weighted Quick Union with Path Compression
@@ -179,12 +180,12 @@ public class UF_HWQUPC implements UF {
     private void mergeComponents(int i, int j) {
         // FIXME make shorter root point to taller one
         if   (height[i] < height[j]) {
-            parent[i] = j;
-            height[j] += height[i];
+            updateParent(i,j);
+            updateHeight(j,i);
         }
         else {
-            parent[j] = i;
-            height[i] += height[j];
+            updateParent(j,i);
+            updateHeight(i,j);
         }
     }
 
